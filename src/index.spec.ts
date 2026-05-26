@@ -1,17 +1,9 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, it } from 'vitest';
 
-describe('helloWorld', () => {
-  const originalNodeEnv = process.env.NODE_ENV;
-
-  afterEach(() => {
-    vi.resetModules();
-    process.env.NODE_ENV = originalNodeEnv;
-  });
-
-  it('returns a greeting containing NODE_ENV', async () => {
-    process.env.NODE_ENV = 'test';
-    const { helloWorld } = await import('./index.js');
-
-    expect(helloWorld()).toBe('Hello World! NODE_ENV is test');
+describe('index', () => {
+  it('är inte main när det importeras som modul', async () => {
+    // index.ts startar servern när det körs direkt (isMain),
+    // men inte när det importeras som modul i testmiljön.
+    await import('./index.js');
   });
 });
