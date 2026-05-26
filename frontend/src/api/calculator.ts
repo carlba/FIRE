@@ -4,7 +4,9 @@ export interface YearProjection {
   monthlySalary: number;
   monthlyPension: number;
   monthlyPassiveIncome: number;
+  monthlyExpenses: number;
   totalMonthlyIncome: number;
+  netMonthlyIncome: number;
 }
 
 export interface PensionInterval {
@@ -19,6 +21,10 @@ export interface CalculateRequest {
   startingCapital: number;
   annualReturnRate: number;
   monthlySavings?: number;
+  monthlyExpenses?: number;
+  monthlyExpenseInflationRate?: number;
+  monthlyPensionInflationRate?: number;
+  monthlyPensionTaxRate?: number;
   pensionIntervals: PensionInterval[];
 }
 

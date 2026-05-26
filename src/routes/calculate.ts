@@ -14,6 +14,10 @@ const calculateRequestSchema = z.object({
   startingCapital: z.number().nonnegative(),
   annualReturnRate: z.number().min(0).max(100),
   monthlySavings: z.number().nonnegative().optional(),
+  monthlyExpenses: z.number().nonnegative().optional(),
+  monthlyExpenseInflationRate: z.number().min(0).max(100).optional(),
+  monthlyPensionInflationRate: z.number().min(0).max(100).optional(),
+  monthlyPensionTaxRate: z.number().min(0).max(100).optional(),
   pensionIntervals: z.array(pensionIntervalSchema),
 });
 
@@ -23,7 +27,9 @@ const yearProjectionSchema = z.object({
   monthlySalary: z.number(),
   monthlyPension: z.number(),
   monthlyPassiveIncome: z.number(),
+  monthlyExpenses: z.number(),
   totalMonthlyIncome: z.number(),
+  netMonthlyIncome: z.number(),
 });
 
 const calculateResponseSchema = z.object({
