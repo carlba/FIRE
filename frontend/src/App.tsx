@@ -8,10 +8,12 @@ export function App() {
   const [projections, setProjections] = useState<YearProjection[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [projectionInput, setProjectionInput] = useState<CalculateRequest | null>(null);
 
   async function handleSubmit(request: CalculateRequest) {
     setIsLoading(true);
     setError(null);
+    setProjectionInput(request);
     try {
       const response = await calculateProjection(request);
       setProjections(response.projections);
@@ -48,7 +50,11 @@ export function App() {
             <p className="mb-4 text-sm text-gray-500">
               Alla belopp i kronor per manad, fore skatt.
             </p>
-            <ProjectionTable projections={projections} />
+            <ProjectionTable
+              projections={projections}
+              currentAge={projectionInput?.currentAge ?? projections[0].age}
+              annualInflationRate={projectionInput?.monthlyExpenseInflationRate ?? 0}
+            />
           </section>
         )}
       </main>

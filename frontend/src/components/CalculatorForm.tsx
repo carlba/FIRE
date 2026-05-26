@@ -20,6 +20,10 @@ interface FormValues {
   startingCapital: string;
   annualReturnRate: string;
   monthlySavings: string;
+  monthlyExpenses: string;
+  monthlyExpenseInflationRate: string;
+  monthlyPensionInflationRate: string;
+  monthlyPensionTaxRate: string;
 }
 
 interface CalculatorFormProps {
@@ -33,7 +37,11 @@ export function CalculatorForm({ onSubmit, isLoading }: CalculatorFormProps) {
     monthlyIncome: '50000',
     startingCapital: '500000',
     annualReturnRate: '7',
-    monthlySavings: '5000',
+    monthlySavings: '',
+    monthlyExpenses: '0',
+    monthlyExpenseInflationRate: '0',
+    monthlyPensionInflationRate: '0',
+    monthlyPensionTaxRate: '0',
   });
   const [pensionIntervals, setPensionIntervals] =
     useState<PensionInterval[]>(DEFAULT_PENSION_INTERVALS);
@@ -49,18 +57,38 @@ export function CalculatorForm({ onSubmit, isLoading }: CalculatorFormProps) {
   function validate(): boolean {
     const newErrors: Partial<FormValues> = {};
     const age = Number(values.currentAge);
-    if (!values.currentAge || isNaN(age) || age < 0 || age > 89)
+    if (values.currentAge === '' || isNaN(age) || age < 0 || age > 89)
       newErrors.currentAge = 'Ange en ålder mellan 0 och 89';
-    if (!values.monthlyIncome || Number(values.monthlyIncome) < 0)
+    if (values.monthlyIncome === '' || Number(values.monthlyIncome) < 0)
       newErrors.monthlyIncome = 'Ange en positiv månadsinkomst';
-    if (!values.startingCapital || Number(values.startingCapital) < 0)
+    if (values.startingCapital === '' || Number(values.startingCapital) < 0)
       newErrors.startingCapital = 'Ange ett positivt startkapital';
     if (
-      !values.annualReturnRate ||
+      values.annualReturnRate === '' ||
       Number(values.annualReturnRate) < 0 ||
       Number(values.annualReturnRate) > 100
     )
       newErrors.annualReturnRate = 'Ange avkastning mellan 0 och 100 %';
+    if (values.monthlyExpenses === '' || Number(values.monthlyExpenses) < 0)
+      newErrors.monthlyExpenses = 'Ange ett positivt månadsbelopp för utgifter';
+    if (
+      values.monthlyExpenseInflationRate === '' ||
+      Number(values.monthlyExpenseInflationRate) < 0 ||
+      Number(values.monthlyExpenseInflationRate) > 100
+    )
+      newErrors.monthlyExpenseInflationRate = 'Ange en inflation mellan 0 och 100 %';
+    if (
+      values.monthlyPensionInflationRate === '' ||
+      Number(values.monthlyPensionInflationRate) < 0 ||
+      Number(values.monthlyPensionInflationRate) > 100
+    )
+      newErrors.monthlyPensionInflationRate = 'Ange en inflation mellan 0 och 100 %';
+    if (
+      values.monthlyPensionTaxRate === '' ||
+      Number(values.monthlyPensionTaxRate) < 0 ||
+      Number(values.monthlyPensionTaxRate) > 100
+    )
+      newErrors.monthlyPensionTaxRate = 'Ange en skatt mellan 0 och 100 %';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -74,6 +102,16 @@ export function CalculatorForm({ onSubmit, isLoading }: CalculatorFormProps) {
       startingCapital: Number(values.startingCapital),
       annualReturnRate: Number(values.annualReturnRate),
       monthlySavings: values.monthlySavings ? Number(values.monthlySavings) : undefined,
+      monthlyExpenses: values.monthlyExpenses ? Number(values.monthlyExpenses) : undefined,
+      monthlyExpenseInflationRate: values.monthlyExpenseInflationRate
+        ? Number(values.monthlyExpenseInflationRate)
+        : undefined,
+      monthlyPensionInflationRate: values.monthlyPensionInflationRate
+        ? Number(values.monthlyPensionInflationRate)
+        : undefined,
+      monthlyPensionTaxRate: values.monthlyPensionTaxRate
+        ? Number(values.monthlyPensionTaxRate)
+        : undefined,
       pensionIntervals,
     });
   }
@@ -144,6 +182,68 @@ export function CalculatorForm({ onSubmit, isLoading }: CalculatorFormProps) {
               min={0}
               value={values.monthlySavings}
               onChange={set('monthlySavings')}
+              placeholder="0"
+              className="sm:max-w-xs"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1 sm:col-span-2">
+            <Label htmlFor="monthlyExpenses">Månadsutgifter (kr, valfritt)</Label>
+            <Input
+              id="monthlyExpenses"
+              type="number"
+              min={0}
+              value={values.monthlyExpenses}
+              onChange={set('monthlyExpenses')}
+              placeholder="0"
+              error={errors.monthlyExpenses}
+              className="sm:max-w-xs"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1 sm:col-span-2">
+            <Label htmlFor="monthlyExpenseInflationRate">Inflation för utgifter (%)</Label>
+            <Input
+              id="monthlyExpenseInflationRate"
+              type="number"
+              min={0}
+              max={100}
+              step={0.1}
+              value={values.monthlyExpenseInflationRate}
+              onChange={set('monthlyExpenseInflationRate')}
+              error={errors.monthlyExpenseInflationRate}
+              placeholder="0"
+              className="sm:max-w-xs"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1 sm:col-span-2">
+            <Label htmlFor="monthlyPensionInflationRate">Inflation för pension (%)</Label>
+            <Input
+              id="monthlyPensionInflationRate"
+              type="number"
+              min={0}
+              max={100}
+              step={0.1}
+              value={values.monthlyPensionInflationRate}
+              onChange={set('monthlyPensionInflationRate')}
+              error={errors.monthlyPensionInflationRate}
+              placeholder="0"
+              className="sm:max-w-xs"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1 sm:col-span-2">
+            <Label htmlFor="monthlyPensionTaxRate">Pensionsskatt (%)</Label>
+            <Input
+              id="monthlyPensionTaxRate"
+              type="number"
+              min={0}
+              max={100}
+              step={0.1}
+              value={values.monthlyPensionTaxRate}
+              onChange={set('monthlyPensionTaxRate')}
+              error={errors.monthlyPensionTaxRate}
               placeholder="0"
               className="sm:max-w-xs"
             />

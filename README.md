@@ -60,6 +60,9 @@ npm install
 npm run dev
 ```
 
+Kalkylatorn visar nu även kapitalets dagensvärde i tabellen, justerat med
+utgiftsinflationen.
+
 ## Konfiguration
 
 Backendkonfiguration läses från miljövariabler via Zod-schema. Standardinställningar:
